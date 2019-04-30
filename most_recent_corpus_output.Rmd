@@ -1,0 +1,364 @@
+---
+title: "Acoustic correlates of word stress - Most recent corpus results"
+output: html_document
+---
+
+## Introduction
+
+Date last updated: 17th of April 2018.
+
+This file takes the corpus reported in in Gordon & Roettger (2017) and Roettger & Gordon (2017) as input and calculates counts for respective statistics, allowing us to generate graphs based on the most recently updated corpus. 
+
+Please refer to: 
+
+Gordon, M., & Roettger, T. (2017). Acoustic correlates of word stress: A cross-linguistic survey. *Linguistics Vanguard*, 3(1).
+
+Roettger, T., & Gordon, M. (2017). Methodological issues in the study of word stress correlates. *Linguistics Vanguard*, 3(1).
+
+
+```{r load_in, warning=F, message=F, echo=F}
+
+# load in the relevant data table
+# tidyverse is all we need
+library(tidyverse)
+
+# set working directory and load in data
+#setwd("/YOUR_DIRECTORY/")
+setwd("/Users/jessicavarela/Downloads/data and scripts")
+
+## load in data 
+xdata <- read.csv("Gordon&Roettger_Stress Corpus.csv")
+xdata <- tbl_df(xdata)
+
+```
+
+## Corpus
+
+Several different primary sources were consulted, including a number of phonetics and areal studies journals, working papers volumes and books and dissertations. The corpus (in form of a table) is publically available online at https://osf.io/9r2cd/ alongside a script to reproduce respective counts presented in this manuscript. To establish a reliable and informative corpus that can be used in the future, cited authors are encouraged to submit corrections, if we have interpreted respective aspects of their method and/or results incorrectly. Further, we would like to invite scholars that have published work on word stress that is not logged in the present corpus to share their results with us for inclusion in the database.
+
+Although the database was intended to be as comprehensive as possible, many works that dealt with stress were excluded from the present study on various methodological grounds. First, papers in which methodological description was too sparse or vague to allow for replication were excluded. Likewise excluded were studies that did not present quantitative results. Also omitted were papers not explicitly focused on stress. Papers on stress were included, however, even if experimental design created confounds that could render definitive interpretation of results impossible. For example, several studies were based on words uttered in isolation where word-level stress is conflated with phrase-level prominence, while many others employed carrier phrases in which the target word was (either likely or explicitly) focused, thereby creating a potential confound between phrase-level prominence and word-level stress (see Roettger and Gordon this issue). Finally, we included only studies on populations consisting of adult speakers without reported speech impairments. 
+
+Here is a list of all language varieties which were included in this corpus:
+
+```{r getlanguages, echo=F}
+
+####################
+## General counts ##
+####################
+
+## get size of corpus
+# nrow(xdata)
+
+## get number of languages 
+unique(xdata$language)
+
+```
+
+```{r getcounts, echo=F}
+
+###########################
+## methodological counts ##
+###########################
+
+## split "corpus" levels ("lab speech" vs. "spontaneous speech") ----
+xdata$corpus <- as.character(xdata$corpus)
+
+## split
+xdata$corpus_dummy1 <- sapply(strsplit(xdata$corpus,split = ","), function(x){x[1]})
+xdata$corpus_dummy2 <- sapply(strsplit(xdata$corpus,split = ","), function(x){x[2]})
+
+## write into binary column
+xdata$corpus_lab <- ifelse(xdata$corpus_dummy1 == "lab speech", 1, 
+                                       ifelse(xdata$corpus_dummy2 == "lab speech", 1, 0))
+
+xdata$corpus_spont <- ifelse(xdata$corpus_dummy1 == "spontaneous speech", 1, 
+                               ifelse(xdata$corpus_dummy2 == "spontaneous speech", 1, 0))
+
+## delete dummy columns
+xdata <- xdata[ , -which(names(xdata) %in% c("corpus_dummy1","corpus_dummy2"))]
+
+## split "context" for lab speech ("context phrase", "metalinguistic phrase", "isolation", "text")
+
+## factor to character
+xdata$context <- as.character(xdata$context)
+
+## split
+xdata$context_dummy1 <- sapply(strsplit(xdata$context,split = ","), function(x){x[1]})
+xdata$context_dummy2 <- sapply(strsplit(xdata$context,split = ","), function(x){x[2]})
+xdata$context_dummy3 <- sapply(strsplit(xdata$context,split = ","), function(x){x[3]})
+xdata$context_dummy4 <- sapply(strsplit(xdata$context,split = ","), function(x){x[4]})
+
+## write into binary columnns
+xdata$context_phrase <- ifelse(xdata$context_dummy1 == "context phrase" |
+                               xdata$context_dummy2 == "context phrase" | 
+                               xdata$context_dummy3 == "context phrase" |
+                               xdata$context_dummy4 == "context phrase" | 
+                               xdata$context_dummy1 == "metalinguistic phrase" | 
+                               xdata$context_dummy2 == "metalinguistic phrase" | 
+                               xdata$context_dummy3 == "metalinguistic phrase" | 
+                               xdata$context_dummy4 == "metalinguistic phrase" |
+                               xdata$context_dummy1 == "text" | 
+                               xdata$context_dummy2 == "text" | 
+                               xdata$context_dummy3 == "text" | 
+                               xdata$context_dummy4 == "text", 1, 0)
+                              
+
+xdata$context_isolation <- ifelse(xdata$context_dummy1 == "isolation" | 
+                                  xdata$context_dummy2 == "isolation" | 
+                                  xdata$context_dummy3 == "isolation" | 
+                                  xdata$context_dummy4 == "isolation" , 1, 0)
+
+
+## delete dummy columns
+xdata <- xdata[ , -which(names(xdata) %in% c("context_dummy1", "context_dummy2", "context_dummy3", "context_dummy4"))]
+
+## split "phrase_position" ("isolation", "non-final", "final", "controlled")
+
+## factor to character
+xdata$phrase_position <- as.character(xdata$phrase_position)
+
+## split
+xdata$phrase_dummy1 <- sapply(strsplit(xdata$phrase_position,split = ","), function(x){x[1]})
+xdata$phrase_dummy2 <- sapply(strsplit(xdata$phrase_position,split = ","), function(x){x[2]})
+
+# write into binary column
+xdata$phrase_final <- ifelse(xdata$phrase_dummy1 == "final" | 
+                             xdata$phrase_dummy2 == "final", 1, 0)
+
+xdata$phrase_non_final <- ifelse(xdata$phrase_dummy1 == "non-final" | 
+                                 xdata$phrase_dummy2 == "non-final", 1, 0)
+
+xdata$phrase_unspec <- ifelse(xdata$phrase_dummy1 == "unspecified" | 
+                              xdata$phrase_dummy2 == "unspecified", 1 ,0)
+
+xdata$phrase_varied <- ifelse(xdata$phrase_dummy1 == "varied" | 
+                              xdata$phrase_dummy2 == "varied", 1, 0)
+
+xdata$phrase_controlled <- ifelse(xdata$phrase_dummy1 == "controlled" | 
+                                  xdata$phrase_dummy2 == "controlled", 1, 0)
+
+## delete dummy columns
+xdata <- xdata[ , -which(names(xdata) %in% c("phrase_dummy1", "phrase_dummy2"))]
+
+## split "accent_information_structure" ("accented", "unaccented", "implicit contrast", "accent controlled")----
+
+## factor to character
+xdata$accent_information_structure <- as.character(xdata$accent_information_structure)
+
+## write into binary column
+xdata$accent_confound <- ifelse(xdata$accent_information_structure == "implicit contrast" |
+                                xdata$accent_information_structure == "accented", 1, 0)
+
+xdata$accent_controlled <- ifelse(xdata$accent_information_structure == "accent controlled" |
+                                  xdata$accent_information_structure == "unaccented", 1, 0)
+
+xdata$accent_unspecified <- ifelse(xdata$accent_information_structure == "unspecified", 1, 0)
+
+
+## "NAs" to "0" ----
+vars <- c("corpus_lab", "corpus_spont", "context_phrase", "context_isolation", "phrase_final", 
+           "phrase_non_final", "phrase_unspec", "phrase_varied", "phrase_controlled", "accent_confound", "accent_controlled", "accent_unspecified")
+
+xdata[vars][is.na(xdata[vars])] <- 0 
+
+
+###################################
+## collect methodological counts ##
+###################################
+
+## lab vs. spontaneous 
+lab_counts <- sum(xdata$corpus_lab, na.rm = T)
+spont_counts <- sum(xdata$corpus_spont, na.rm = T)
+
+## isolation vs. phrase counts within lab counts
+isolation_counts <- sum(xdata[xdata$corpus_lab == 1,]$context_isolation, na.rm = T)
+phrase_counts <- sum(xdata[xdata$corpus_lab == 1,]$context_phrase, na.rm = T)
+
+## phrase position counts within phrase counts
+unspecified_position_counts <- sum(xdata[xdata$corpus_lab == 1 & xdata$context_phrase == 1,]$phrase_unspec, na.rm = T)
+varied_position_counts <- sum(xdata[xdata$corpus_lab == 1 & xdata$context_phrase == 1,]$phrase_varied, na.rm = T)
+controlled_counts <- sum(xdata[xdata$corpus_lab == 1 & xdata$context_phrase == 1,]$phrase_controlled, na.rm = T)
+final_position_counts <- sum(xdata[xdata$corpus_lab == 1 & xdata$context_phrase == 1,]$phrase_final, na.rm = T)
+non_final_position_counts <- sum(xdata[xdata$corpus_lab == 1 & xdata$context_phrase == 1,]$phrase_non_final, na.rm = T)
+
+## accent counts as a function of position counts
+nf_unspecified_accent_counts <- sum(xdata[xdata$corpus_lab == 1 & xdata$context_phrase == 1 & xdata$phrase_non_final == 1,]$accent_unspecified, na.rm = T)
+nf_accent_controlled_counts <- sum(xdata[xdata$corpus_lab == 1 & xdata$context_phrase == 1 & xdata$phrase_non_final == 1,]$accent_controlled, na.rm = T)
+nf_accent_confounded_counts <- sum(xdata[xdata$corpus_lab == 1 & xdata$context_phrase == 1 & xdata$phrase_non_final == 1,]$accent_confound, na.rm = T)
+
+f_unspecified_accent_counts <- sum(xdata[xdata$corpus_lab == 1 & xdata$context_phrase == 1 & xdata$phrase_final == 1,]$accent_unspecified, na.rm = T)
+f_accent_controlled_counts <- sum(xdata[xdata$corpus_lab == 1 & xdata$context_phrase == 1 & xdata$phrase_final == 1,]$accent_controlled, na.rm = T)
+f_accent_confounded_counts <- sum(xdata[xdata$corpus_lab == 1 & xdata$context_phrase == 1 & xdata$phrase_final == 1,]$accent_confound, na.rm = T)
+
+c_unspecified_accent_counts <- sum(xdata[xdata$corpus_lab == 1 & xdata$context_phrase == 1 & xdata$phrase_controlled == 1,]$accent_unspecified, na.rm = T)
+c_accent_controlled_counts <- sum(xdata[xdata$corpus_lab == 1 & xdata$context_phrase == 1 & xdata$phrase_controlled == 1,]$accent_controlled, na.rm = T)
+c_accent_confounded_counts <- sum(xdata[xdata$corpus_lab == 1 & xdata$context_phrase == 1 & xdata$phrase_controlled == 1,]$accent_confound, na.rm = T)
+
+u_unspecified_accent_counts <- sum(xdata[xdata$corpus_lab == 1 & xdata$context_phrase == 1 & xdata$phrase_unspec == 1,]$accent_unspecified, na.rm = T)
+u_accent_controlled_counts <- sum(xdata[xdata$corpus_lab == 1 & xdata$context_phrase == 1 & xdata$phrase_unspec == 1,]$accent_controlled, na.rm = T)
+u_accent_confounded_counts <- sum(xdata[xdata$corpus_lab == 1 & xdata$context_phrase == 1 & xdata$phrase_unspec == 1,]$accent_confound, na.rm = T)
+
+v_unspecified_accent_counts <- sum(xdata[xdata$corpus_lab == 1 & xdata$context_phrase == 1 & xdata$phrase_varied == 1,]$accent_unspecified, na.rm = T)
+v_accent_controlled_counts <- sum(xdata[xdata$corpus_lab == 1 & xdata$context_phrase == 1 & xdata$phrase_varied == 1,]$accent_controlled, na.rm = T)
+v_accent_confounded_counts <- sum(xdata[xdata$corpus_lab == 1 & xdata$context_phrase == 1 & xdata$phrase_varied == 1,]$accent_confound, na.rm = T)
+
+
+## create data.frame with count values
+corpus <- c("spontaneous speech", rep("lab speech", 16))
+context <- c("phrase", "isolation", rep("phrase", 15))
+position <- c(rep(NA, 2), rep("unspecified", 3), rep("non final", 3), rep("final", 3), rep("controlled", 3), rep("varied", 3))
+accent <- c(rep(NA, 2), rep(c("accent unspecified", "accent controlled", "accent confounded"), 5))
+counts <- c(spont_counts, isolation_counts, 
+            u_unspecified_accent_counts, u_accent_controlled_counts, u_accent_confounded_counts,
+            nf_unspecified_accent_counts, nf_accent_controlled_counts, nf_accent_confounded_counts,
+            f_unspecified_accent_counts, f_accent_controlled_counts, f_accent_confounded_counts,
+            c_unspecified_accent_counts, c_accent_controlled_counts, c_accent_confounded_counts,
+            v_unspecified_accent_counts, v_accent_controlled_counts, v_accent_confounded_counts)
+counts_df <- data.frame(corpus, context, position, accent, counts)
+
+## subset for plots
+counts_df_sum1 <-
+  counts_df %>%
+  group_by(corpus, context) %>%
+  summarise(counts = sum(counts))
+
+counts_df_sum2 <-
+  counts_df %>%
+  filter(context == "phrase" & position != "NA") %>%
+  group_by(position, accent) %>%
+  summarise(counts = sum(counts))
+
+```
+
+## Methodological variety
+
+### Elicitation context
+
+Plot counts of corpus types (laboratory speech vs. spontaneous speech) and elicitation context (isolated words vs. word embedded into phrases) across languages.
+
+```{r method_plot, echo = F, fig.width = 10, fig.align="center", fig.cap = "\nNumber of studies as a function of corpus type (y-axis) and elicitation context in which target words appeared (color coded) for all (sub-) studies in the database. Note that studies using more than one type of context are included in the counts of all relevant categories. This plot corresponds to Figure 2 in Roettger and Gordon (2017: 3)."}
+
+################################
+## plot methodological counts ##
+################################
+
+## plot corpus and context
+#corpus_context_plot <-
+ggplot(counts_df_sum1, aes(x = corpus, y = counts, fill = context, label = counts)) +
+      geom_bar(stat = "identity") +
+      geom_text(aes(y = counts), size = 5, colour = c("white",  "black", "white"), hjust = 0.5, position = position_stack(vjust = 0.5)) +
+      scale_fill_manual(values = c("#cccccc", "#666666"),
+                        name = "Elicitation context\n",
+                        breaks = c("NA", "isolation", "phrase"),
+                        labels = c("spontaneous speech", "isolation", "phrase")) +
+  coord_flip() +   
+  theme_classic() +
+      ylab("\nnumber of studies") +
+      xlab("\n corpus type") +
+      theme(legend.text = element_text(size = 20),
+            legend.title = element_text(size = 20),
+            axis.text = element_text(size = 20),
+            axis.title.y = element_blank(),
+            axis.title = element_text(size = 20, face = "bold"))
+
+#ggsave(filename = "corpus_context_plot.png", plot = corpus_context_plot, width = 10, height = 4.5, dpi = 600)
+
+```
+
+### Phrase position and accentuation patterns
+
+Within laboratory speech, plot counts of elicitation methods according to the phrase position of the target word (varied, unspecified, non-final, final, controlled (both)) and the accompanying accentuation pattern (potentially confounded, controlled, unspecified).
+
+```{r position_plot, echo = F, fig.width = 10, fig.align="center", fig.cap = "\nNumber of studies as a function of target word position (y-axis) and accent information (color coded) within (sub-) studies using lab speech. Note that studies using more than one context are included in counts of all relevant categories. This plot corresponds to Figure 3 in Roettger & Gordon (2017: 5)"}
+
+# plot position and accent
+#position_accent_plot <-
+ggplot(counts_df_sum2, aes(x = position, y = counts, fill = accent, label = counts)) +
+  geom_bar(stat = "identity") +
+  geom_text(data = counts_df_sum2[counts_df_sum2$counts > 0,], aes(y = counts), size = 5, colour = "black", hjust = 0.5, position = position_stack(vjust = 0.5)) +
+  scale_fill_manual(values = c("#CC6666", "#9999CC", "#66CC99"),
+                    name = "Accentuation Status\n",
+                    breaks = c("NA", "accent confounded", "accent controlled", "accent unspecified"),
+                    labels = c("NA", "potentially confounded", "controlled", "unspecified")) +
+  scale_x_discrete(labels=c("non final" = "non-final", "final" = "final", "controlled" = "controlled (both)",
+                            "unspecified" = "unspecified",  "varied" = "varied")) +
+  coord_flip() + 
+  theme_classic() +
+  ylab("\nnumber of studies") +
+  xlab("\nphrase position of target word") +
+  theme(legend.text = element_text(size = 20),
+        legend.title = element_text(size = 20),
+        axis.text = element_text(size = 20),
+        axis.title.y = element_blank(),
+        axis.title = element_text(size = 20, face = "bold"))
+
+#ggsave(filename = "position_accent_plot.png", plot = position_accent_plot, width = 12, height = 4,  dpi = 600)
+
+```
+
+## Acoustic measurements
+
+Plot counts of measured acoustic parameters alongside whether the respective authors reported them as being correlated or not.
+
+```{r acoustic_plot, echo = F, fig.width = 10, fig.align="center", fig.cap = "\nNumber of (sub-) studies for which various acoustic correlates of stress were successful (black bars), unsuccessful (grey bars), and not measured (white bars) in differentiating stress level. This plot corresponds to Figure 2 in Gordon & Roettger (2017: 4)."}
+
+#######################################
+## plot acoustic measurements counts ##
+#######################################
+
+## collect measurements counts 
+xdata$duration_count <- as.factor(ifelse(grepl("greater", xdata$duration) | grepl("smaller", xdata$duration), "effect", 
+                         ifelse(grepl("ns", xdata$duration), "no effect", "not tested")))
+xdata$f0_count <- as.factor(ifelse(grepl("greater", xdata$f0) | grepl("higher", xdata$f0) | grepl("lower", xdata$f0), "effect",     
+                                  ifelse(grepl("ns", xdata$f0), "no effect", "not tested")))
+xdata$intensity_count <- as.factor(ifelse(grepl("greater", xdata$intensity), "effect", 
+                               ifelse(grepl("ns", xdata$intensity), "no effect", "not tested")))
+xdata$formants_count <- as.factor(ifelse(xdata$formants == "ns" | xdata$formants == "ns F1,ns F2", "no effect", 
+                               ifelse(grepl("F1", xdata$formants), "effect", "not tested")))
+xdata$spectral_tilt_count <- as.factor(ifelse(grepl("greater", xdata$spectral_tilt) | grepl("lower", xdata$spectral_tilt) | grepl("phon-dB", xdata$spectral_tilt), "effect",
+                              ifelse(grepl("ns", xdata$spectral_tilt), "no effect","not tested")))
+
+## create data.frame with measurement count values
+measurement_df <- xdata %>%
+  select(duration_count, f0_count, intensity_count, formants_count, spectral_tilt_count) %>%
+  gather(measurement, category, c(duration_count, f0_count, intensity_count, formants_count, spectral_tilt_count)) %>% 
+  group_by(measurement, category) %>%
+  summarise(count = n())
+  
+# as factor
+measurement_df$measurement = as.factor(measurement_df$measurement) 
+measurement_df$category = as.factor(measurement_df$category) 
+
+measurement_df$category <- factor(measurement_df$category, levels = c("not tested", "no effect", "effect"))
+measurement_df$measurement <- factor(measurement_df$measurement, levels = c("duration_count", "f0_count", "intensity_count",
+                                                                         "formants_count", "spectral_tilt_count"))
+
+## plot measurements counts ####
+#measurement_plot <-
+ggplot(measurement_df, aes(x = measurement, y = count, fill = category, label = count)) +
+  geom_bar(stat = "identity", colour = "black") +
+  geom_text(aes(y = count), size = 5, colour = c("#CCCCCC","#000000","#000000","#CCCCCC","#000000","#000000",
+                                                 "#CCCCCC","#000000","#000000","#CCCCCC","#000000","#000000",
+                                                 "#CCCCCC","#000000","#000000"),
+            hjust = 0.5, position = position_stack(vjust = 0.5)) +
+  scale_fill_manual(values = c("#FFFFFF", "#CCCCCC", "#000000"),
+                    name = "",
+                    breaks = c("not tested", "no effect", "effect"),
+                    labels = c( "not measured", "no effect", "effect")) +
+  scale_x_discrete(labels = c("duration_count" = "duration", "f0_count" = "f0",
+                            "intensity_count" = "intensity", "formants_count" = "formants",
+                            "spectral_tilt_count" = "spectral tilt")) +
+  theme_classic() +
+  ylab("number of studies\n") +
+  xlab("\n acoustic measurement") +
+  theme(#legend.title = element_blank(),
+        legend.text = element_text(size = 20),
+        legend.title = element_text(size = 20),
+        axis.text = element_text(size = 20),
+        axis.title = element_text(size = 20, face = "bold"))
+
+#ggsave(filename = "measurement_plot.png", plot = measurement_plot, width = 11, height = 4.8)
+
+```
+
+
