@@ -1,0 +1,221 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml" lang="" xml:lang="">
+  <head>
+    <title>Acoustic correlates of word stress: a cross-linguistic survey</title>
+    <meta charset="utf-8" />
+    <meta name="author" content="Matthew Gordon &amp; Timo Roettger" />
+    <link href="Spring_2019_Presentation_files/remark-css-0.0.1/default.css" rel="stylesheet" />
+    <link href="Spring_2019_Presentation_files/remark-css-0.0.1/fc.css" rel="stylesheet" />
+    <link href="Spring_2019_Presentation_files/remark-css-0.0.1/lucy-fonts.css" rel="stylesheet" />
+  </head>
+  <body>
+    <textarea id="source">
+class: center, middle, inverse, title-slide
+
+# Acoustic correlates of word stress: a cross-linguistic survey
+### Matthew Gordon &amp; Timo Roettger
+
+---
+
+
+## Goals of the study
+
+--
+
+- interested in what acoustic parameters researchers measure and confirm as correlating with word stress
+
+--
+
+- what methodological basis are these results grounded on
+
+--
+
+- distill a clearer picture of the realtive robustness of different acoustic eponents of word stress
+
+--
+
+- do not attempt to address the complex issue of situating word stress within the broader taxonomy of prosodic systems
+
+--
+
+- assume word stress to be the phonological marking of one or more prominent syllables within the phonological word
+
+---
+
+# Methodologies 
+
+- Several sources: surveys of 110 (sub-) studies of 75 languages (and varieties)
+
+--
+
+- included phonetics and areal studies journals,working papers volumes, books and dissertations 
+
+--
+
+- Encourage authors to submit corrections and invite scholars with published work on word stress
+
+--
+
+- database was intended to be as comprehensive as possible 
+
+- Many studies were excluded: 
+
+    1. Papers in which methodological description was too sparse to allow for replication
+
+    2. studies that did not present quantitative results 
+
+    3. studies/papers that were not explicitly focused on stress
+
+- Papers on stress were included
+
+---
+
+# Results
+
+- a large number of parameters potentially signal stress 
+(duration, various F0 features, overall intensity, assorted frequency-weighted measures of intensity, vowel formant frequeencies)
+
+--
+
+- studies varied considerably 
+
+---
+
+# Availability 
+
+- Yes! 
+
+--
+
+### Articles 
+
+- Gordon, M., &amp; Roettger, T. (2017). Acoustic correlates of word stress: A cross-linguistic survey. Linguistics Vanguard, 3(1);
+- Roettger, T., &amp; Gordon, M. (2017). Methodological issues in the study of word stress correlates. Linguistics Vanguard, 3(1).
+
+### Other Files 
+
+- The most recent version of the corpus as a .csv
+
+- An rmd file that generated the plots from the most recent data table 
+
+- html file
+
+---
+
+## Rating 
+
+- I would give this a 7.
+
+
+Pros
+
+- I didn't have to really change much except the working directory and make sure that I had tidyverse.
+
+
+
+
+
+---
+- able to download files as a zip file 
+
+- Updated corpus was provided 
+
+- able to compare article results with my results when I ran the code
+
+- Can be updated if authors with similar work would like to send their data/information
+
+Cons
+
+- Figures were not from the present article, but from the other article as well. 
+
+- Only produced 3 of the 4 figures 
+
+---
+![Picture](/Users/jessicavarela/Desktop/pic2.png)
+    </textarea>
+<style data-target="print-only">@media screen {.remark-slide-container{display:block;}.remark-slide-scaler{box-shadow:none;}}</style>
+<script src="https://remarkjs.com/downloads/remark-latest.min.js"></script>
+<script>var slideshow = remark.create();
+if (window.HTMLWidgets) slideshow.on('afterShowSlide', function (slide) {
+  window.dispatchEvent(new Event('resize'));
+});
+(function(d) {
+  var s = d.createElement("style"), r = d.querySelector(".remark-slide-scaler");
+  if (!r) return;
+  s.type = "text/css"; s.innerHTML = "@page {size: " + r.style.width + " " + r.style.height +"; }";
+  d.head.appendChild(s);
+})(document);
+
+(function(d) {
+  var el = d.getElementsByClassName("remark-slides-area");
+  if (!el) return;
+  var slide, slides = slideshow.getSlides(), els = el[0].children;
+  for (var i = 1; i < slides.length; i++) {
+    slide = slides[i];
+    if (slide.properties.continued === "true" || slide.properties.count === "false") {
+      els[i - 1].className += ' has-continuation';
+    }
+  }
+  var s = d.createElement("style");
+  s.type = "text/css"; s.innerHTML = "@media print { .has-continuation { display: none; } }";
+  d.head.appendChild(s);
+})(document);
+// delete the temporary CSS (for displaying all slides initially) when the user
+// starts to view slides
+(function() {
+  var deleted = false;
+  slideshow.on('beforeShowSlide', function(slide) {
+    if (deleted) return;
+    var sheets = document.styleSheets, node;
+    for (var i = 0; i < sheets.length; i++) {
+      node = sheets[i].ownerNode;
+      if (node.dataset["target"] !== "print-only") continue;
+      node.parentNode.removeChild(node);
+    }
+    deleted = true;
+  });
+})();</script>
+
+<script>
+(function() {
+  var links = document.getElementsByTagName('a');
+  for (var i = 0; i < links.length; i++) {
+    if (/^(https?:)?\/\//.test(links[i].getAttribute('href'))) {
+      links[i].target = '_blank';
+    }
+  }
+})();
+</script>
+
+<script>
+slideshow._releaseMath = function(el) {
+  var i, text, code, codes = el.getElementsByTagName('code');
+  for (i = 0; i < codes.length;) {
+    code = codes[i];
+    if (code.parentNode.tagName !== 'PRE' && code.childElementCount === 0) {
+      text = code.textContent;
+      if (/^\\\((.|\s)+\\\)$/.test(text) || /^\\\[(.|\s)+\\\]$/.test(text) ||
+          /^\$\$(.|\s)+\$\$$/.test(text) ||
+          /^\\begin\{([^}]+)\}(.|\s)+\\end\{[^}]+\}$/.test(text)) {
+        code.outerHTML = code.innerHTML;  // remove <code></code>
+        continue;
+      }
+    }
+    i++;
+  }
+};
+slideshow._releaseMath(document);
+</script>
+<!-- dynamically load mathjax for compatibility with self-contained -->
+<script>
+(function () {
+  var script = document.createElement('script');
+  script.type = 'text/javascript';
+  script.src  = 'https://mathjax.rstudio.com/latest/MathJax.js?config=TeX-MML-AM_CHTML';
+  if (location.protocol !== 'file:' && /^https?:/.test(script.src))
+    script.src  = script.src.replace(/^https?:/, '');
+  document.getElementsByTagName('head')[0].appendChild(script);
+})();
+</script>
+  </body>
+</html>
