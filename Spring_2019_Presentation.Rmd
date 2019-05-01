@@ -100,7 +100,7 @@ Pros
 
 - I didn't have to really change much except the working directory and make sure that I had tidyverse.
 
-
+![Picture](https://raw.githubusercontent.com/jessivarela/spring_2019_presentation_2/master/pic1.png)
 
 
 
@@ -120,4 +120,3 @@ Cons
 - Only produced 3 of the 4 figures 
 
 ---
-![Picture](/Users/jessicavarela/Desktop/pic2.png)
