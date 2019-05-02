@@ -77,6 +77,7 @@ output:
 # Results continued..
 
 ![figure4](https://raw.githubusercontent.com/jessivarela/spring_2019_presentation_2/master/Figures/pic4.png)
+![figure5](https://raw.githubusercontent.com/jessivarela/spring_2019_presentation_2/master/Figures/pic5.png)
 ---
 
 # Results continued..
